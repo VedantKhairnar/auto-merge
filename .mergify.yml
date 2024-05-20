@@ -1,7 +1,7 @@
 pull_request_rules:
-  - name: Automatic merge
-    description: Merge when PR passes all branch protection and has label automerge
+  - name: automatic merge when CI passes
     conditions:
-      - label = automerge
+      - status-success=CI / build (pull_request)
     actions:
-      merge: 
+      merge:
+        method: merge
