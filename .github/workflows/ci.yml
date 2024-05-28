@@ -25,10 +25,13 @@ jobs:
         if: success()
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.TOKEN }}
           script: |
-            github.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+            await github.rest.issues.addLabels({
+              owner: owner,
+              repo: repo,
+              issue_number: pull_number,
               labels: ['automerge']
-            })
+            });
