@@ -16,23 +16,7 @@ jobs:
        run: npm install
      - name: Run tests
        run: npm test
-     # Automerge if tests pass
-     - name: Automerge
-       if: success()
-       env:
-         GITHUB_TOKEN: ${{ secrets.TOKEN }}
-       run: |
-         git config --global user.name "VedantKhairnar"
-         git config --global user.email "khairnarvc@rknec.edu"
-         # Fetch the PR merge commit
-         git fetch origin pull/${{ github.event.pull_request.number }}/merge:PR_HEAD
-         # Merge the PR
-         git checkout main
-         git merge --no-ff --no-edit PR_HEAD
-         # Push the changes to the main branch
-         git branch -a
-         git push origin main
-     # Optionally, add automerge label if tests pass
+     # Add automerge label if tests pass
      - name: Add automerge label
        if: success()
        uses: actions/github-script@v6
