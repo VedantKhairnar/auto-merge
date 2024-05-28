@@ -1,58 +1,45 @@
 name: CI
-
 on:
-  pull_request:
-    branches:
-      - main
-
+ pull_request:
+   branches:
+     - main
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Install dependencies
-        run: npm install
-      - name: Run tests
-        run: npm test
-
-      # Add automerge label if tests pass
-      - name: Add automerge label
-        if: success()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const pull_number = context.payload.pull_request.number;
-            await github.rest.issues.addLabels({
-              owner: owner,
-              repo: repo,
-              issue_number: pull_number,
-              labels: ['automerge']
-            });
-      # Automerge if tests pass
-      # Automerge if tests pass
-      - name: Automerge
-        if: success()
-        run: |
-          git config --global user.name "VedantKhairnar"
-          git config --global user.email "khairnarvc@rknec.edu"
-          git fetch origin pull/${{ github.event.pull_request.number }}/merge:PR_HEAD
-          git merge PR_HEAD --no-ff --no-edit
-          git checkout -b dummy-commit  # Create a new branch for the dummy commit
-          touch dummy-file.txt  # Create a dummy file
-          git add dummy-file.txt
-          git commit -m "Add dummy commit"  # Commit the dummy file
-          git push origin dummy-commit  # Push the dummy commit to the repository
-          git checkout main  # Switch back to the main branch
-          git merge dummy-commit --no-ff --no-edit  # Merge the dummy commit into main
-          git branch -d dummy-commit  # Delete the dummy commit branch
-          git checkout main
-          git push origin main --allow-unrelated-histories # Push the changes to the main branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+ build:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v2
+     - name: Set up Node.js
+       uses: actions/setup-node@v2
+       with:
+         node-version: '14'
+     - name: Install dependencies
+       run: npm install
+     - name: Run tests
+       run: npm test
+     # Automerge if tests pass
+     - name: Automerge
+       if: success()
+       env:
+         GITHUB_TOKEN: ${{ secrets.TOKEN }}
+       run: |
+         git config --global user.name "VedantKhairnar"
+         git config --global user.email "khairnarvc@rknec.edu"
+         # Fetch the PR merge commit
+         git fetch origin pull/${{ github.event.pull_request.number }}/merge:PR_HEAD
+         # Merge the PR
+         git checkout main
+         git merge --no-ff --no-edit PR_HEAD
+         # Push the changes to the main branch
+         git push origin main
+     # Optionally, add automerge label if tests pass
+     - name: Add automerge label
+       if: success()
+       uses: actions/github-script@v6
+       with:
+         script: |
+           github.issues.addLabels({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             issue_number: context.issue.number,
+             labels: ['automerge']
+           })
