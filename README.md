@@ -1,4 +1,4 @@
-Testing 6
+Testing 7
 # Pledge
 
 It is a platform to reimagine about places we put our efforts into as developers. In most cases, we all are attached to the goals that provide eventual satisfaction. Let's all co
