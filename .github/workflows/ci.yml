@@ -36,6 +36,7 @@ jobs:
               labels: ['automerge']
             });
       # Automerge if tests pass
+      # Automerge if tests pass
       - name: Automerge
         if: success()
         run: |
