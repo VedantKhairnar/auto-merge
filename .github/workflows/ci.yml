@@ -43,6 +43,14 @@ jobs:
           git config --global user.email "khairnarvc@rknec.edu"
           git fetch origin pull/${{ github.event.pull_request.number }}/merge:PR_HEAD
           git merge PR_HEAD --no-ff --no-edit
-          git push origin main
+          git checkout -b dummy-commit  # Create a new branch for the dummy commit
+          touch dummy-file.txt  # Create a dummy file
+          git add dummy-file.txt
+          git commit -m "Add dummy commit"  # Commit the dummy file
+          git push origin dummy-commit  # Push the dummy commit to the repository
+          git checkout main  # Switch back to the main branch
+          git merge dummy-commit --no-ff --no-edit  # Merge the dummy commit into main
+          git branch -d dummy-commit  # Delete the dummy commit branch
+          git push origin main  # Push the changes to the main branch
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
