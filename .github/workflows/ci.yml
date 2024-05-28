@@ -20,22 +20,18 @@ jobs:
       - name: Run tests
         run: npm test
 
-      # Automerge if tests pass
-      - name: Automerge
-        if: success() && github.event_name == 'pull_request'
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        run: |
-          git config --global user.name "VedantKhairnar"
-          git config --global user.email "khairnarvc@rknec.edu"
-          git fetch origin main
-          git checkout main
-          git merge --no-ff --no-edit FETCH_HEAD
-          git push origin main
-          
-      # Automatically merge the pull request
-      - name: Merge pull request
-        if: success() && github.event_name == 'pull_request'
-        uses: pullreminders/automerge-action@v2
+      # Add automerge label if tests pass
+      - name: Add automerge label
+        if: success()
+        uses: actions/github-script@v6
         with:
-          github_token: ${{ secrets.TOKEN }}
+          github-token: ${{ secrets.TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+            await github.rest.issues.addLabels({
+              owner: owner,
+              repo: repo,
+              issue_number: pull_number,
+              labels: ['automerge']
+            });
