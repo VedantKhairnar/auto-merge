@@ -1,14 +1,14 @@
 name: CI
-
+ 
 on:
   pull_request:
     branches:
       - main
-
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+ 
     steps:
       - uses: actions/checkout@v2
       - name: Set up Node.js
@@ -19,16 +19,16 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm test
-
-      # Pull and merge if tests pass
-      - name: Automerge
+ 
+      # Add automerge label if tests pass
+      - name: Add automerge label
         if: success()
-        run: |
-          git config --global user.name "sasi2312"
-          git config --global user.email "sasikumar.s@cogniverselabs.com"
-          git checkout main
-          git pull origin main
-          git merge ${{ github.head_ref }}
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['automerge']
+            })
