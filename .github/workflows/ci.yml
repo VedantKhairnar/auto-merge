@@ -35,3 +35,14 @@ jobs:
               issue_number: pull_number,
               labels: ['automerge']
             });
+      # Automerge if tests pass
+      - name: Automerge
+        if: success()
+        run: |
+          git config --global user.name "VedantKhairnar"
+          git config --global user.email "khairnarvc@rknec.edu"
+          git fetch origin pull/${{ github.event.pull_request.number }}/merge:PR_HEAD
+          git merge PR_HEAD --no-ff --no-edit
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
