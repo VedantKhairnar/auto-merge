@@ -24,10 +24,10 @@ jobs:
       - name: Automerge
         if: success() && github.event_name == 'pull_request'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.name "VedantKhairnar"
+          git config --global user.email "khairnarvc@rknec.edu"
           git fetch origin main
           git checkout main
           git merge --no-ff --no-edit FETCH_HEAD
