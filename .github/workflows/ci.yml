@@ -52,6 +52,7 @@ jobs:
           git checkout main  # Switch back to the main branch
           git merge dummy-commit --no-ff --no-edit  # Merge the dummy commit into main
           git branch -d dummy-commit  # Delete the dummy commit branch
+          git checkout main
           git push origin main --allow-unrelated-histories # Push the changes to the main branch
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
