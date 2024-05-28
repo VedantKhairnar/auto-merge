@@ -32,16 +32,3 @@ jobs:
           git checkout main
           git merge --no-ff --no-edit FETCH_HEAD
           git push origin main
-
-      # Optionally, add automerge label if tests pass
-      - name: Add automerge label
-        if: success() && github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['automerge']
-            })
