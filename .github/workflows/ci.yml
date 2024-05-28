@@ -20,15 +20,15 @@ jobs:
       - name: Run tests
         run: npm test
 
-      # Add automerge label if tests pass
-      - name: Add automerge label
+      # Pull and merge if tests pass
+      - name: Automerge
         if: success()
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              labels: ['automerge']
-            })
+        run: |
+          git config --global user.name "sasi2312"
+          git config --global user.email "sasikumar.s@cogniverselabs.com"
+          git checkout main
+          git pull origin main
+          git merge ${{ github.head_ref }}
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
