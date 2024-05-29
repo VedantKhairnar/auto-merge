@@ -25,5 +25,5 @@ jobs:
         name: automerge
         uses: "gsoc2/automerge-action@v0.16.2"
         with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
             
