@@ -14,44 +14,24 @@ jobs:
       repository-projects: write
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out the repository
+        uses: actions/checkout@v2
+      
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
+
       - name: Install dependencies
         run: npm install
+
       - name: Run tests
         run: npm test
 
-      # Add automerge label if tests pass
-      - name: Add automerge label
+      # Add automerge and awesome labels if tests pass
+      - name: Add labels if tests pass
         if: success()
-        uses: actions/github-script@v6
+        uses: actions/ecosystem/action-add-labels@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const pull_number = context.payload.pull_request.number;
-            await github.rest.issues.addLabels({
-              owner: owner,
-              repo: repo,
-              issue_number: pull_number,
-              labels: ['automerge']
-            });
-
-      # Add awesome label if tests pass
-      - name: Add awesome label
-        if: success()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const pull_number = context.payload.pull_request.number;
-            await github.rest.issues.addLabels({
-              owner: owner,
-              repo: repo,
-              issue_number: pull_number,
-              labels: ['awesome']
-            });
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          labels: 'automerge,awesome'
