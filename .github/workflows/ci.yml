@@ -24,10 +24,34 @@ jobs:
       - name: Run tests
         run: npm test
 
-      # Add automerge and awesome labels if tests pass
-      - name: Add labels if tests pass
+      # Add automerge label if tests pass
+      - name: Add automerge label
         if: success()
-        uses: actions-ecosystem/action-add-labels@v1
+        uses: actions/github-script@v6
         with:
-          github_token: ${{ secrets.TOKEN }}  # Use your PAT secret here
-          labels: 'automerge,awesome'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+            await github.rest.issues.addLabels({
+              owner: owner,
+              repo: repo,
+              issue_number: pull_number,
+              labels: ['automerge']
+            });
+
+      # Add awesome label if tests pass
+      - name: Add awesome label
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+            await github.rest.issues.addLabels({
+              owner: owner,
+              repo: repo,
+              issue_number: pull_number,
+              labels: ['awesome']
+            });
