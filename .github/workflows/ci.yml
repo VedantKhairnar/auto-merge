@@ -1,9 +1,8 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request_target:
+    types: [opened, synchronize]
 
 jobs:
   build:
@@ -27,11 +26,12 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-      # Add automerge and awesome labels if tests pass
-      - name: Add labels if tests pass
-        if: success()
-        uses: actions/labeler@v3
+  
+      - name: Check out the repository
+        uses: actions/checkout@v2
+  
+      - name: Add 'awesome' label to all PRs
+        uses: actions-ecosystem/action-add-labels@v1
         with:
-          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          labels: 'automerge,awesome'
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          labels: 'awesome'
