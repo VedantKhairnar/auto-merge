@@ -20,15 +20,9 @@ on:
 jobs:
   automerge:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
     steps:
       - id: automerge
         name: automerge
         uses: "gsoc2/automerge-action@v0.16.2"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          merge_labels: "automerge"
-
