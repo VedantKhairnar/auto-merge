@@ -28,7 +28,7 @@ jobs:
       - id: automerge
         name: automerge
         uses: "gsoc2/automerge-action@v0.16.2"
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           merge_labels: "automerge"
 
